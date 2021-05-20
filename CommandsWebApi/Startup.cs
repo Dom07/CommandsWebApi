@@ -1,21 +1,17 @@
 using CommandsWebApi.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CommandsWebApi
 {
     public class Startup
     {
+        private string _commanderConnection = null;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,11 +19,17 @@ namespace CommandsWebApi
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Retrieving password from user secrets
+            var builder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("CommanderConnection"));
+            builder.Password = Configuration["CommanderPassword"];
+            _commanderConnection = builder.ConnectionString;
+
+            services.AddDbContext<CommanderContext>(opt => opt.UseSqlServer(_commanderConnection));
             services.AddControllers();
-            services.AddScoped<ICommanderRepo, MockCommanderRepo>();
+            //services.AddScoped<ICommanderRepo, MockCommanderRepo>();
+            services.AddScoped<ICommanderRepo, SqlCommanderRepo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
