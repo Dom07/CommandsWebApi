@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using Newtonsoft.Json.Serialization;
 
 namespace CommandsWebApi
 {
@@ -27,7 +29,12 @@ namespace CommandsWebApi
             _commanderConnection = builder.ConnectionString;
 
             services.AddDbContext<CommanderContext>(opt => opt.UseSqlServer(_commanderConnection));
-            services.AddControllers();
+
+            services.AddControllers().AddNewtonsoftJson(s => {
+                s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //services.AddScoped<ICommanderRepo, MockCommanderRepo>();
             services.AddScoped<ICommanderRepo, SqlCommanderRepo>();
         }

@@ -5,6 +5,21 @@ namespace CommandsWebApi.Data
 {
     public class MockCommanderRepo : ICommanderRepo
     {
+        public void CreateCommand(Command cmd)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void DeleteCommand(int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void DeleteCommand(Command cmd)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public IEnumerable<Command> GetAllCommands()
         {
             List<Command> commands = new List<Command>
@@ -20,6 +35,16 @@ namespace CommandsWebApi.Data
         public Command GetCommandById(int id)
         {
             return new Command { Id = 0, HowTo = "Design the api", Line = "Plan on how to build the api", Platform = "DevJob" };
+        }
+
+        public bool SaveChanges()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void UpdateCommand(Command cmd)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
